@@ -12,6 +12,7 @@ class sllADT {
     private:
         unsigned int count;
         struct node<T> *proot;
+        struct node<T> *plast;
     public:
         sllADT();
         ~sllADT();
@@ -23,5 +24,6 @@ class sllADT {
         //for a C++ beginner. Handover root
         //for the driver/client to iterate by itself
         struct node<T>* getroot();
+        struct node<T>* getlast();
          
 };
