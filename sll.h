@@ -24,6 +24,7 @@ class sllADT {
         struct node<T>* reverse_node_recursively(struct node<T>*prevnode, 
                                          struct node<T>*node);
         void reverse_recursive();
+        T get_nth_last(unsigned int n);
 
         //Writing iterator is a big jump
         //for a C++ beginner. Handover root

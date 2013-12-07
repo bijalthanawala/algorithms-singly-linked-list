@@ -19,8 +19,6 @@ sllADT<T>::~sllADT() {
     struct node<T> *pnode = proot;
     struct node<T> *next = NULL;
     
-    cout << "~sllADT: entry" << endl;
-
     while(pnode) {
         next = pnode->next;
         delete(pnode); //todo: Make provision to delete pnode->tdata
@@ -29,11 +27,13 @@ sllADT<T>::~sllADT() {
     }
 }
 
+// Return the number of nodes currently in the list
 template <class T>
 unsigned int sllADT<T>::size() {
             return count;
 }
 
+//Insert a new node in front of the list
 template <class T>
 bool sllADT<T>::insert_front(T datum) {
 
@@ -64,6 +64,8 @@ bool sllADT<T>::insert_front(T datum) {
     return true;
 }
 
+
+//Insert a new node at the end of the list
 template <class T>
 bool sllADT<T>::insert_last(T datum) {
 
@@ -177,6 +179,30 @@ void sllADT<T>::reverse_recursive()
     } 
 
     return;
+}
+
+template <class T>
+T sllADT<T>::get_nth_last(unsigned int n)
+{
+    struct node<T>* pnode = getroot();    
+    struct node<T>* pfwdnode = pnode;    
+    unsigned i = 0;
+
+    if(!n || n > size()) {
+        return -1;
+    }
+
+    for(i=0; i<n && pfwdnode; i++) {
+        pfwdnode = pfwdnode->next;
+    }
+
+    
+    while(pfwdnode) {
+        pnode = pnode->next;
+        pfwdnode = pfwdnode->next;
+    }
+
+   return pnode->tdata; 
 }
 
 template <class T>
@@ -372,6 +398,45 @@ bool test_reverse(int max_nodes=10, int step=100, int init=500)
     return 0;
 }
 
+void test_get_nth_last(int max_nodes=10, int step=100, int init=500) 
+{
+    sllADT<int> records;
+    struct node<int> *pnode = NULL;
+    int value = 0;
+    int i = 0;
+
+
+    // Insert test nodes
+    for(i=0, value=init; i < max_nodes; i++) {
+        records.insert_last(value);
+        value += step;
+        }
+
+    cout << "TEST get_nth_last(0): ";
+    assert(records.get_nth_last(0) == -1);
+    cout << "PASSED" << endl;
+
+    cout << "TEST get_nth_last(out-bounds): ";
+    assert(records.get_nth_last(max_nodes+1) == -1);
+    cout << "PASSED" << endl;
+
+    cout << "TEST get_nth_last(max_nodes): ";
+    assert(records.get_nth_last(max_nodes) == records.getroot()->tdata);
+    cout << "PASSED" << endl;
+
+    cout << "TEST get_nth_last(1): ";
+    assert(records.get_nth_last(1) == records.getlast()->tdata);
+    cout << "PASSED" << endl;
+
+    value = init;
+    for(i=0; i < max_nodes; i++) {
+        cout << "TEST get_nth_last(" << max_nodes-i << "): ";
+        assert(records.get_nth_last(max_nodes - i) == value);
+        cout << "PASSED" << " (" << value << ")" << endl;
+        value += step;
+    }
+
+}
 
 
 int main() {
@@ -380,4 +445,5 @@ int main() {
     test_insert_front();
     test_insert_last();
     test_reverse();
+    test_get_nth_last();
 }
