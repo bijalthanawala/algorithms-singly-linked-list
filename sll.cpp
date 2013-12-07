@@ -130,33 +130,41 @@ int test_insert_front()
 {
     sllADT<int> records;
     struct node<int> *pnode = NULL;
-    int value = 500;
+    int init = 500;
     int step = 100;
+    int value = 0;
+    int i = 0;
+    int max_nodes = 20;
 
     cout << "TEST test_insert_front : " ;
 
-    records.insert_front(value);
-    assert(records.size() == 1);
+    // Insert test nodes
+    for(i=0, value=init; i < max_nodes; i++) {
+        // Insert test node in the front
+        records.insert_front(value);
 
-    value += step;
-    records.insert_front(value);
-    assert(records.size() == 2);
+        //Ensure list's size accounts for the new node
+        assert(records.size() == i+1);
+        
+        // Ensure the root node reflects the recent value
+        // (artifact of inserting in front)
+        assert(records.getroot()->tdata == value);
+    
+        //Make sure the last node of the list is set correctly
+        if(records.size() == 1) {
+            assert(records.getlast()->tdata == value);
+        }
 
-    value += step;
-    records.insert_front(value);
-    assert(records.size() == 3);
-
-    value += step;
-    records.insert_front(value);
-    assert(records.size() == 4);
+        // Next value to be inserted
+        value += step;
+        }
 
     pnode = records.getroot();
     while(pnode) {
+        value -= step;
         assert(pnode->tdata == value);
         pnode = pnode->next;
-        value -= step;
     }
-
     
     cout << "PASSED" << endl;
 
