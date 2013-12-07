@@ -118,7 +118,43 @@ void sllADT<T>::reverse_iterative_nostack()
         c = c ? c->next : NULL;
     }
 
-    proot = a;
+    // Fix the 'last' and the 'root' node
+    this->plast = this->proot;
+    this->proot = a;
+}
+
+
+
+template <class T>
+struct node<T>* sllADT<T>::reverse_node_recursively(struct node<T>*prevnode, 
+                                         struct node<T>*thisnode)
+{
+    struct node<T> *last=NULL;  
+
+    if(thisnode) {
+        last = reverse_node_recursively(thisnode, thisnode->next);
+        if(!thisnode->next)  {
+                last = thisnode;
+        }
+        thisnode->next = prevnode;
+    }
+
+    return last; //Do not rely on ADT to maintain a last pointer, compute
+}
+
+template <class T>
+void sllADT<T>::reverse_recursive()
+{
+    struct node<T> *root = getroot();
+
+    if(root) {
+        // Reverse the list and in the end fix root and the last pointer
+        this->proot = reverse_node_recursively(NULL, root); //This routine 
+                                                            //returns the very last node
+        this->plast = root;
+    } 
+
+    return;
 }
 
 template <class T>
@@ -233,14 +269,13 @@ int test_insert_last(int max_nodes=20, int step=100, int init=500)
     return 0;
 }
 
-bool test_reverse_iterative_nostack(int max_nodes=20, int step=100, int init=500) 
+bool test_reverse(int max_nodes=10, int step=100, int init=500) 
 {
     sllADT<int> records;
     struct node<int> *pnode = NULL;
     int value = 0;
     int i = 0;
 
-    cout << "TEST test_reverse_iterative_nostack : " ;
 
     // Insert test nodes
     for(i=0, value=init; i < max_nodes; i++) {
@@ -248,10 +283,12 @@ bool test_reverse_iterative_nostack(int max_nodes=20, int step=100, int init=500
         value += step;
         }
 
+    cout << "TEST reverse_iterative_nostack : " ;
+
     //Reverse the link list
     records.reverse_iterative_nostack();
 
-    // Now verify the result
+    // Verify each node (this automatically verifies the root node)
     value = init;
     pnode = records.getroot();
     while(pnode) {
@@ -259,6 +296,28 @@ bool test_reverse_iterative_nostack(int max_nodes=20, int step=100, int init=500
         pnode = pnode->next;
         value += step;
     }
+    
+    //Now verify the 'last' node
+    value -= step;
+    assert(records.getlast()->tdata == value); 
+    
+    cout << "PASSED" << endl;
+
+    cout << "TEST reverse_recursive : " ;
+    //Reverse the link list again, this time using a different method
+    records.reverse_recursive();
+
+    // Verify each node (this automatically verifies the root node)
+    pnode = records.getroot();
+    while(pnode) {
+        assert(pnode->tdata == value);
+        pnode = pnode->next;
+        value -= step;
+    }
+    
+    //Now verify the 'last' node
+    value = init;
+    assert(records.getlast()->tdata == value); 
     
     cout << "PASSED" << endl;
 
@@ -272,5 +331,5 @@ int main() {
     test_init();
     test_insert_front();
     test_insert_last();
-    test_reverse_iterative_nostack();
+    test_reverse();
 }

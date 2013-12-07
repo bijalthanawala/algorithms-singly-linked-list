@@ -20,6 +20,9 @@ class sllADT {
         bool insert_front(T);
         bool insert_last(T);
         void reverse_iterative_nostack();
+        struct node<T>* reverse_node_recursively(struct node<T>*prevnode, 
+                                         struct node<T>*node);
+        void reverse_recursive();
 
         //Writing iterator is a big jump
         //for a C++ beginner. Handover root
