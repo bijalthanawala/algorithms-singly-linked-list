@@ -19,6 +19,7 @@ class sllADT {
         unsigned int size();
         bool insert_front(T);
         bool insert_last(T);
+        void reverse_iterative_nostack();
 
         //Writing iterator is a big jump
         //for a C++ beginner. Handover root

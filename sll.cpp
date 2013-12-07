@@ -101,6 +101,27 @@ bool sllADT<T>::insert_last(T datum) {
 }
 
 template <class T>
+void sllADT<T>::reverse_iterative_nostack()
+{
+    struct node<T> *a = NULL;
+    struct node<T> *b = getroot();
+    struct node<T> *c = b ? b->next : NULL;
+
+    if(!b) {
+        return;
+    }
+    
+    while(b) {
+        b->next = a;
+        a = b;
+        b = c;
+        c = c ? c->next : NULL;
+    }
+
+    proot = a;
+}
+
+template <class T>
 struct node<T>* sllADT<T>::getroot()
 {
     return proot;
@@ -126,15 +147,12 @@ int test_init()
     
 }
 
-int test_insert_front() 
+int test_insert_front(int max_nodes=20, int step=100, int init=500) 
 {
     sllADT<int> records;
     struct node<int> *pnode = NULL;
-    int init = 500;
-    int step = 100;
     int value = 0;
     int i = 0;
-    int max_nodes = 20;
 
     cout << "TEST test_insert_front : " ;
 
@@ -171,15 +189,12 @@ int test_insert_front()
     return 0;
 }
 
-int test_insert_last() 
+int test_insert_last(int max_nodes=20, int step=100, int init=500) 
 {
     sllADT<int> records;
     struct node<int> *pnode = NULL;
-    int init = 500;
-    int step = 100;
     int value = 0;
     int i = 0;
-    int max_nodes = 20;
 
     cout << "TEST test_insert_last : " ;
 
@@ -218,10 +233,44 @@ int test_insert_last()
     return 0;
 }
 
+bool test_reverse_iterative_nostack(int max_nodes=20, int step=100, int init=500) 
+{
+    sllADT<int> records;
+    struct node<int> *pnode = NULL;
+    int value = 0;
+    int i = 0;
+
+    cout << "TEST test_reverse_iterative_nostack : " ;
+
+    // Insert test nodes
+    for(i=0, value=init; i < max_nodes; i++) {
+        records.insert_front(value);
+        value += step;
+        }
+
+    //Reverse the link list
+    records.reverse_iterative_nostack();
+
+    // Now verify the result
+    value = init;
+    pnode = records.getroot();
+    while(pnode) {
+        assert(pnode->tdata == value);
+        pnode = pnode->next;
+        value += step;
+    }
+    
+    cout << "PASSED" << endl;
+
+    return 0;
+}
+
+
 
 int main() {
 
     test_init();
     test_insert_front();
     test_insert_last();
+    test_reverse_iterative_nostack();
 }
