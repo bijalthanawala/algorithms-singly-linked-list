@@ -1,4 +1,4 @@
 all: sll
 
-sll: sll.h
+sll: sll.h sll.c
 	g++ -o sll sll.c

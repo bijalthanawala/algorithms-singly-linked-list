@@ -13,8 +13,14 @@ class sllADT {
         unsigned int count;
         struct node<T> *proot;
     public:
+        sllADT();
         unsigned int size();
-        void insert_front(T);
-        void insert_last(T);
+        bool insert_front(T);
+        bool insert_last(T);
+
+        //Writing iterator is a big jump
+        //for a C++ beginner. Handover root
+        //for the driver/client to iterate by itself
+        struct node<T>* getroot();
          
 };
