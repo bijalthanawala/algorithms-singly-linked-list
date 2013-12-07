@@ -14,6 +14,7 @@ class sllADT {
         struct node<T> *proot;
     public:
         sllADT();
+        ~sllADT();
         unsigned int size();
         bool insert_front(T);
         bool insert_last(T);

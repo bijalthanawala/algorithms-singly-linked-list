@@ -1,12 +1,28 @@
+
 #include <iostream>
+#include <cassert>
 #include "sll.h"
+
 using namespace std;
 
 
 template <class T>
 sllADT<T>::sllADT() {
     count = 0;
-    proot = NULL;
+    proot = NULL; 
+}
+
+template <class T>
+sllADT<T>::~sllADT() {
+    struct node<T> *pnode = proot;
+    struct node<T> *next = NULL;
+
+    while(pnode) {
+        next = pnode->next;
+        delete(pnode);
+        count--;
+        pnode = next;
+    }
 }
 
 template <class T>
@@ -45,27 +61,58 @@ struct node<T>* sllADT<T>::getroot()
 }
 
 
-int main() 
+int test_init() 
+{
+    sllADT<int> init;
+    cout << "TEST test_init : " ;
+
+    assert(init.size() == 0);
+    assert(init.getroot() == NULL);
+
+    cout << "PASSED" << endl;
+    
+}
+
+int test_insert_front() 
 {
     sllADT<int> records;
     struct node<int> *pnode = NULL;
+    int value = 500;
+    int step = 100;
 
-    cout << "Initial size = " << records.size() << endl;
-    records.insert_front(100);
-    cout << "size after inserting (100) = " << records.size() << endl;
-    records.insert_front(200);
-    cout << "size after inserting (200) = " << records.size() << endl;
-    records.insert_front(300);
-    cout << "size after inserting (300) = " << records.size() << endl;
-    records.insert_front(400);
-    cout << "size after inserting (400) = " << records.size() << endl;
+    cout << "TEST test_insert_front : " ;
+
+    records.insert_front(value);
+    assert(records.size() == 1);
+
+    value += step;
+    records.insert_front(value);
+    assert(records.size() == 2);
+
+    value += step;
+    records.insert_front(value);
+    assert(records.size() == 3);
+
+    value += step;
+    records.insert_front(value);
+    assert(records.size() == 4);
 
     pnode = records.getroot();
     while(pnode) {
-        cout << pnode->tdata << endl;
+        assert(pnode->tdata == value);
         pnode = pnode->next;
+        value -= step;
     }
 
     
+    cout << "PASSED" << endl;
+
     return 0;
+}
+
+
+int main() {
+
+    test_init();
+    test_insert_front();
 }
