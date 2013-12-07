@@ -176,26 +176,35 @@ int test_insert_last()
     sllADT<int> records;
     struct node<int> *pnode = NULL;
     int init = 500;
-    int value = init;
     int step = 100;
+    int value = 0;
+    int i = 0;
+    int max_nodes = 20;
 
     cout << "TEST test_insert_last : " ;
 
-    records.insert_front(value);
-    assert(records.size() == 1);
+    // Insert test nodes
+    for(i=0, value=init; i < max_nodes; i++) {
+        // Insert test node in the front
+        records.insert_last(value);
 
-    value += step;
-    records.insert_last(value);
-    assert(records.size() == 2);
+        //Ensure list's size accounts for the new node
+        assert(records.size() == i+1);
+        
+        // Ensure the root node reflects the recent value
+        // (artifact of inserting in front)
+        assert(records.getlast()->tdata == value);
+    
+        //Make sure the last node of the list is set correctly
+        if(records.size() == 1) {
+            assert(records.getroot()->tdata == value);
+        }
 
-    value += step;
-    records.insert_last(value);
-    assert(records.size() == 3);
+        // Next value to be inserted
+        value += step;
+        }
 
-    value += step;
-    records.insert_last(value);
-    assert(records.size() == 4);
-
+    
     value = init;
     pnode = records.getroot();
     while(pnode) {
