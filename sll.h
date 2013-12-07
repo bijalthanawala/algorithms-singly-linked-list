@@ -20,6 +20,7 @@ class sllADT {
         bool insert_front(T);
         bool insert_last(T);
         void reverse_iterative_nostack();
+        void reverse_iterative_use_stack();
         struct node<T>* reverse_node_recursively(struct node<T>*prevnode, 
                                          struct node<T>*node);
         void reverse_recursive();

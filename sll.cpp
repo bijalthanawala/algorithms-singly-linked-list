@@ -18,10 +18,12 @@ template <class T>
 sllADT<T>::~sllADT() {
     struct node<T> *pnode = proot;
     struct node<T> *next = NULL;
+    
+    cout << "~sllADT: entry" << endl;
 
     while(pnode) {
         next = pnode->next;
-        delete(pnode);
+        delete(pnode); //todo: Make provision to delete pnode->tdata
         count--;
         pnode = next;
     }
@@ -124,6 +126,26 @@ void sllADT<T>::reverse_iterative_nostack()
 }
 
 
+template <class T>
+void sllADT<T>::reverse_iterative_use_stack()
+{
+    sllADT *pnewsll = new(sllADT<int>); 
+    struct node<T>* pnode = getroot();
+    struct node<T>* pnext = NULL;
+
+    //Does not use actual stack, instead
+    //utilizes insert_front to simulate stack behaviour
+   
+    while(pnode) {
+        pnewsll->insert_front(pnode->tdata);
+        pnext = pnode->next;
+        delete(pnode); //todo: Make provision to delete pnode->tdata
+        pnode = pnext; 
+    }
+
+    this->proot = pnewsll->getroot();
+    this->plast = pnewsll->getlast();
+}
 
 template <class T>
 struct node<T>* sllADT<T>::reverse_node_recursively(struct node<T>*prevnode, 
@@ -303,6 +325,8 @@ bool test_reverse(int max_nodes=10, int step=100, int init=500)
     
     cout << "PASSED" << endl;
 
+
+
     cout << "TEST reverse_recursive : " ;
     //Reverse the link list again, this time using a different method
     records.reverse_recursive();
@@ -321,6 +345,30 @@ bool test_reverse(int max_nodes=10, int step=100, int init=500)
     
     cout << "PASSED" << endl;
 
+
+
+
+    cout << "TEST reverse_iterative_use_stack : " ;
+
+    //Reverse the link list
+    records.reverse_iterative_use_stack();
+
+    // Verify each node (this automatically verifies the root node)
+    value = init;
+    pnode = records.getroot();
+    while(pnode) {
+        assert(pnode->tdata == value);
+        pnode = pnode->next;
+        value += step;
+    }
+    
+    //Now verify the 'last' node
+    value -= step;
+    assert(records.getlast()->tdata == value); 
+    
+    cout << "PASSED" << endl;
+
+    
     return 0;
 }
 
