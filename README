@@ -4,3 +4,10 @@ Feel free to learn from it or verify/compare with your own.
 
 Open to new ideas, improvements and more link-list algorithms.
 
+
+List of currently implemented algorithms:
+    reverse the list recursively
+    reverse the list iteratively (using stack)
+    reverse the list iteratively (without using stack)
+    get_nth_last item
+    rotate right
