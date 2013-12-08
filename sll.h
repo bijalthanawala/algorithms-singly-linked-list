@@ -24,7 +24,9 @@ class sllADT {
         struct node<T>* reverse_node_recursively(struct node<T>*prevnode, 
                                          struct node<T>*node);
         void reverse_recursive();
-        T get_nth_last(unsigned int n);
+        void rotate_right(unsigned int n); // min n=1. If n >= count, rotates n mod count 
+        void rotate_left(unsigned int n); // min n=1. If n >= count, rotates n mod count
+        T get_nth_last(unsigned int n); //n is in the range 1 to count (inclusive)
 
         //Writing iterator is a big jump
         //for a C++ beginner. Handover root
