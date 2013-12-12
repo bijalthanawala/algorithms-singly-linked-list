@@ -1,13 +1,12 @@
 Some standard singly linked list algorithms, plus an exercise in C++.
-
 Feel free to learn from it or verify/compare with your own. 
 
-Open to new ideas, improvements and more link-list algorithms.
+Open to improvements and more link-list algorithms.
 
 
 List of currently implemented algorithms:
-    reverse the list recursively
-    reverse the list iteratively (using stack)
-    reverse the list iteratively (without using stack)
+    reverse the entire list - recursively
+    reverse the entire list - iteratively (using stack)
+    reverse the entire list - iteratively (without using stack)
     get_nth_last item
     rotate right
