@@ -10,3 +10,4 @@ List of currently implemented algorithms:
     reverse the entire list - iteratively (without using stack)
     get_nth_last item
     rotate right
+    detecting cycle/loop in the link list

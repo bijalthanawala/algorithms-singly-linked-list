@@ -184,25 +184,41 @@ void sllADT<T>::reverse_recursive()
 template <class T>
 T sllADT<T>::get_nth_last(unsigned int n)
 {
+
+    struct node<T>* pnode = get_nth_last_node(n);    
+
+    return (pnode ? pnode->tdata : -1);
+}
+
+template <class T>
+struct node<T>*  sllADT<T>::get_nth_last_node(unsigned int n)
+{
     struct node<T>* pnode = getroot();    
     struct node<T>* pfwdnode = pnode;    
     unsigned i = 0;
 
     if(!n || n > size()) {
-        return -1;
+        return NULL;
     }
 
+    // Make the pfwdnode skip first n nodes
     for(i=0; i<n && pfwdnode; i++) {
         pfwdnode = pfwdnode->next;
     }
 
     
+    // Now pfwdnode is n node ahead,
+    // and pnode is starting at the very first node
+    // Forward each of the pointer one node with
+    // each iteration. Doing that, when pfwdnode
+    // hits the end of the list, pnode is
+    // exactly pointing at nth last node
     while(pfwdnode) {
         pnode = pnode->next;
         pfwdnode = pfwdnode->next;
     }
 
-   return pnode->tdata; 
+   return pnode; 
 }
 
 template <class T>
@@ -225,7 +241,7 @@ void sllADT<T>::rotate_right(unsigned int n)
         struct node<T>*pnewroot = NULL;
         struct node<T>*pnewlast = NULL;
 
-        //calculate n mode size()
+        //calculate n mod size()
         //size() is confirmed to be non-zero, if pnode is non_NULL
         n = pnode ? n % size() : 0;  
         if(n == 0) {
@@ -251,6 +267,7 @@ void sllADT<T>::rotate_right(unsigned int n)
         //Now we are on the very last node that currently is
         pnode->next = getroot(); //Now is no longer the last, but now points 
                                  //the fragment that begins at the current head/root 
+        
         //Set the new root to what we determined earlier
         this->proot = pnewroot;
 
@@ -260,6 +277,34 @@ void sllADT<T>::rotate_right(unsigned int n)
         return;    
 
 }
+
+template <class T>
+bool sllADT<T>::is_loop()
+{
+    unsigned int nr_nodes = size();
+    struct node<T>* pnode = NULL;
+    struct node<T>* fastnode = NULL;
+
+    if(nr_nodes == 0) {
+        return false;
+    }
+
+    pnode = getroot();
+    assert(pnode != NULL); //if size() returns non-zero, getroot() must 
+                           //return non-null. ASSERT
+    fastnode = pnode->next ? (pnode->next)->next : NULL;
+    
+    while(fastnode) {
+        if(fastnode == pnode) {
+            return true;
+        }
+        pnode = pnode->next;
+        fastnode = fastnode->next ? (fastnode->next)->next : NULL;
+    }    
+    
+    return false;
+}
+
 
 int test_init() 
 {
@@ -375,7 +420,6 @@ bool test_reverse(int max_nodes=10, int step=100, int init=500)
         }
 
     cout << "TEST reverse_iterative_nostack : " ;
-
     //Reverse the link list
     records.reverse_iterative_nostack();
 
@@ -414,11 +458,7 @@ bool test_reverse(int max_nodes=10, int step=100, int init=500)
     
     cout << "PASSED" << endl;
 
-
-
-
     cout << "TEST reverse_iterative_use_stack : " ;
-
     //Reverse the link list
     records.reverse_iterative_use_stack();
 
@@ -551,6 +591,66 @@ void test_rotate_right(int max_nodes=10, int step=100, int init=500)
     }
 }
 
+template <class T>
+void test_is_cycle(int max_nodes=10, int step=100, int init=500) 
+{
+    sllADT<int> records;
+    struct node<T>* proot = NULL;
+    struct node<T>* second_node = NULL;
+    int value = 0;
+    int i = 0;
+
+    //Test with an empty list first
+    cout << "test_is_cycle: Empty list: ";
+    assert(records.is_loop() == false);
+    cout << "PASSED" << endl ;
+
+    // Insert test nodes
+    for(i=0, value=init; i < max_nodes; i++) {
+        records.insert_last(value);
+        value += step;
+        }
+
+
+    //Sneakily add cycle on the last node pointing back to root node
+    records.getlast()->next = records.getroot();
+    cout << "test_is_cycle: List with " <<  records.size() << " nodes (cycle = last->root): ";
+    assert(records.is_loop() == true);
+    cout << "PASSED" << endl;
+
+
+    //Now remove the cycle
+    records.getlast()->next = NULL;
+
+    // Test loop without the cycle
+    cout << "test_is_cycle: List with " <<  records.size() << " nodes (no cycle): ";
+    assert(records.is_loop() == false);
+    cout << "PASSED" << endl;
+
+    //Sneakily add cycle on the last node pointing back to 
+    //4th node (6th to the last node)  
+    records.getlast()->next = records.get_nth_last_node(6);
+    cout << "test_is_cycle: List with " <<  records.size() << " nodes (cycle = last->4th node): ";
+    assert(records.is_loop() == true);
+    cout << "PASSED" << endl;
+
+    //Now remove the cycle (else deconstructor would spin forever)
+    records.getlast()->next = NULL;
+    assert(records.is_loop() == false); //Silently check if cycle has been removed successfully
+
+    //Now make the root node point to itself
+    proot = records.getroot();
+    second_node = proot->next; //Memorize the original second node
+    proot->next = proot;
+    cout << "test_is_cycle: List with " <<  records.size() << " nodes (cycle = root->root): ";
+    assert(records.is_loop() == true);
+    cout << "PASSED" << endl;
+    
+    //Now restore the second node
+    proot->next = second_node;
+
+}
+ 
 int main() {
 
     test_init();
@@ -559,5 +659,6 @@ int main() {
     test_reverse();
     test_get_nth_last();
     test_rotate_right();
+    test_is_cycle<int>();
 }
 

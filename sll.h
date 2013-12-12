@@ -27,6 +27,8 @@ class sllADT {
         void rotate_right(unsigned int n); // min n=1. If n >= count, rotates n mod count 
         void rotate_left(unsigned int n); // min n=1. If n >= count, rotates n mod count
         T get_nth_last(unsigned int n); //n is in the range 1 to count (inclusive)
+        struct node<T>* get_nth_last_node(unsigned int n);
+        bool is_loop();
 
         //Writing iterator is a big jump
         //for a C++ beginner. Handover root
